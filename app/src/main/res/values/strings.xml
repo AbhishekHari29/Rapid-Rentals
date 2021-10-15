@@ -5,5 +5,11 @@
     <string name="sign_in">Sign In</string>
     <string name="new_user_register_here">New User? Register Here</string>
     <string name="developer_credits">Created By TEAM</string>
+    <string name="categories">Categories</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_booking">Booking</string>
+    <string name="title_add">Add</string>
+    <string name="title_user">User</string>
 
 </resources>
