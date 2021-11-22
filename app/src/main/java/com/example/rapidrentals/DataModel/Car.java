@@ -46,6 +46,10 @@ public class Car {
         this.regNumber = regNumber;
     }
 
+    public static String generateCarId() {
+        return databaseReference.push().getKey();
+    }
+
     // Main Functions
     public static void getCarsByOwner(String owner, CarDao carDao) {
         databaseReference.orderByChild("owner").equalTo(owner).addListenerForSingleValueEvent(getCarListListener(carDao));

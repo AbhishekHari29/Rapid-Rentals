@@ -11,5 +11,25 @@
     <string name="title_booking">Booking</string>
     <string name="title_add">Add</string>
     <string name="title_user">User</string>
+    <string name="car_brand">Brand</string>
+    <string name="car_fuel">Fuel Type</string>
+    <string name="car_model">Model</string>
+    <string name="car_type">Type</string>
+    <string name="car_seats">Seats</string>
+    <string name="car_year">Year</string>
+    <string name="car_reg_number">License Plate Number</string>
+
+    <string-array name="car_fuel">
+        <item>Petrol</item>
+        <item>Diesel</item>
+        <item>Electric</item>
+    </string-array>
+
+    <string-array name="car_type">
+        <item>Sports</item>
+        <item>Sedan</item>
+        <item>Luxury</item>
+        <item>Coupe</item>
+    </string-array>
 
 </resources>

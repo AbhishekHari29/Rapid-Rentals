@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.rapidrentals.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class CarRentActivity extends AppCompatActivity {
 
