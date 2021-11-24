@@ -19,31 +19,43 @@ public class Car {
     private static final String CARS_DB = "Cars";
     private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(CARS_DB);
 
-    // Fields
+    // Cars Fields
     private String id;
     private String owner;
     private String brand;
     private String model;
     private String type;
-    private String fuelType;
+    private String fuel;
+    private String transmission;
     private int numOfSeats;
     private int year;
     private String regNumber;
+
+    //Rental Fields
+    private float rentPerDay;
+    private boolean carAvailable;
+    private boolean driverAvailable;
+    private Location location;
 
     // Constructors
     public Car() {
     }
 
-    public Car(String id, String owner, String brand, String model, String type, String fuelType, int numOfSeats, int year, String regNumber) {
+    public Car(String id, String owner, String brand, String model, String type, String fuel, String transmission, int numOfSeats, int year, String regNumber, float rentPerDay, boolean carAvailable, boolean driverAvailable, Location location) {
         this.id = id;
         this.owner = owner;
         this.brand = brand;
         this.model = model;
         this.type = type;
-        this.fuelType = fuelType;
+        this.fuel = fuel;
+        this.transmission = transmission;
         this.numOfSeats = numOfSeats;
         this.year = year;
         this.regNumber = regNumber;
+        this.rentPerDay = rentPerDay;
+        this.carAvailable = carAvailable;
+        this.driverAvailable = driverAvailable;
+        this.location = location;
     }
 
     public static String generateCarId() {
@@ -85,10 +97,15 @@ public class Car {
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", type='" + type + '\'' +
-                ", fuelType='" + fuelType + '\'' +
+                ", fuel='" + fuel + '\'' +
+                ", transmission='" + transmission + '\'' +
                 ", numOfSeats=" + numOfSeats +
                 ", year=" + year +
                 ", regNumber='" + regNumber + '\'' +
+                ", rentPerDay=" + rentPerDay +
+                ", carAvailable=" + carAvailable +
+                ", driverAvailable=" + driverAvailable +
+                ", location=" + location +
                 '}';
     }
 
@@ -174,12 +191,12 @@ public class Car {
         this.type = type;
     }
 
-    public String getFuelType() {
-        return fuelType;
+    public String getFuel() {
+        return fuel;
     }
 
-    public void setFuelType(String fuelType) {
-        this.fuelType = fuelType;
+    public void setFuel(String fuel) {
+        this.fuel = fuel;
     }
 
     public int getNumOfSeats() {
@@ -204,5 +221,45 @@ public class Car {
 
     public void setRegNumber(String regNumber) {
         this.regNumber = regNumber;
+    }
+
+    public String getTransmission() {
+        return transmission;
+    }
+
+    public void setTransmission(String transmission) {
+        this.transmission = transmission;
+    }
+
+    public float getRentPerDay() {
+        return rentPerDay;
+    }
+
+    public void setRentPerDay(float rentPerDay) {
+        this.rentPerDay = rentPerDay;
+    }
+
+    public boolean isCarAvailable() {
+        return carAvailable;
+    }
+
+    public void setCarAvailable(boolean carAvailable) {
+        this.carAvailable = carAvailable;
+    }
+
+    public boolean isDriverAvailable() {
+        return driverAvailable;
+    }
+
+    public void setDriverAvailable(boolean driverAvailable) {
+        this.driverAvailable = driverAvailable;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

@@ -36,7 +36,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         holder.brand_model.setText(carHelper.getBrand_model());
         holder.year_type.setText(carHelper.getYear_type());
         holder.location.setText(carHelper.getLocation());
-        holder.price.setText(carHelper.getPrice());
+        holder.price.setText(String.valueOf(carHelper.getRentPerDay()));
         holder.fuel.setText(carHelper.getFuel());
     }
 

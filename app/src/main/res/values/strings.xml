@@ -18,6 +18,8 @@
     <string name="car_seats">Seats</string>
     <string name="car_year">Year</string>
     <string name="car_reg_number">License Plate Number</string>
+    <string name="car_transmission">Transmission</string>
+    <string name="car_rent">Rent Per Day</string>
 
     <string-array name="car_fuel">
         <item>Petrol</item>
@@ -30,6 +32,11 @@
         <item>Sedan</item>
         <item>Luxury</item>
         <item>Coupe</item>
+    </string-array>
+
+    <string-array name="car_transmission">
+        <item>Manual</item>
+        <item>Automatic</item>
     </string-array>
 
 </resources>
