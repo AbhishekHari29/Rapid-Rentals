@@ -1,8 +1,11 @@
 package com.example.rapidrentals.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,6 +17,7 @@ import com.example.rapidrentals.DataModel.CarDao;
 import com.example.rapidrentals.R;
 import com.example.rapidrentals.Utility.LoadingDialog;
 import com.example.rapidrentals.Utility.Validation;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,9 +25,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class CarAddActivity extends AppCompatActivity {
 
+    private final int PICK_GALLERY = 101;
+
     private TextInputLayout brand, model, type, fuel, transmission, seat, year, reg, rent;
     private AutoCompleteTextView typeAtv, fuelAtv, transmissionAtv;
     private SwitchMaterial carAvailableSwitch, driverAvailableSwitch, locationSwitch;
+
+    private AppCompatImageView carImageView;
+    private Uri carImageUri;
 
     private LoadingDialog loadingDialog;
 
@@ -48,6 +57,7 @@ public class CarAddActivity extends AppCompatActivity {
             finish();
         }
 
+        carImageView = findViewById(R.id.imgGallery);
         brand = findViewById(R.id.car_brand_layout);
         model = findViewById(R.id.car_model_layout);
         type = findViewById(R.id.car_type_layout);
@@ -70,6 +80,25 @@ public class CarAddActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.car_fuel)));
         transmissionAtv.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.car_transmission)));
+    }
+
+    public void pickGalleryImage(View view) {
+        ImagePicker.with(this)
+                .galleryOnly()
+                .crop(16f, 9f)
+                .compress(1024)
+                .start(PICK_GALLERY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_GALLERY && resultCode == RESULT_OK && data != null) {
+            carImageUri = data.getData();
+            carImageView.setImageURI(carImageUri);
+        }
+
     }
 
     public void onClickAddCar(View view) {
@@ -103,10 +132,22 @@ public class CarAddActivity extends AppCompatActivity {
             @Override
             public void getBoolean(Boolean result) {
                 if (result) {
-                    Toast.makeText(getApplicationContext(), "Car Updated", Toast.LENGTH_LONG).show();
-                    finish();
+                    Toast.makeText(getApplicationContext(), "Car Updated", Toast.LENGTH_SHORT).show();
+                    if (carImageUri != null)
+                        car.uploadCarImage(carImageUri, new CarDao() {
+                            @Override
+                            public void getBoolean(Boolean result) {
+                                if (result) {
+                                    Toast.makeText(getApplicationContext(), "Image Updated", Toast.LENGTH_SHORT).show();
+                                    loadingDialog.startLoadingDialog();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                 } else {
-                    Toast.makeText(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
                 }
                 loadingDialog.stopLoadingDialog();
             }

@@ -1,6 +1,7 @@
 package com.example.rapidrentals.Helper;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,24 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
+import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.R;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
 public class CarRentAdapter extends ArrayAdapter<CarHelper> {
 
+    Context context;
     List<CarHelper> carHelpers;
     int customLayoutId;
 
     public CarRentAdapter(@NonNull Context context, int resource, @NonNull List<CarHelper> objects) {
         super(context, resource, objects);
+        this.context = context;
         this.carHelpers = objects;
         this.customLayoutId = resource;
     }
@@ -47,12 +54,32 @@ public class CarRentAdapter extends ArrayAdapter<CarHelper> {
         TextView carBrandModel = view.findViewById(R.id.car_brand_model);
         TextView carYearType = view.findViewById(R.id.car_year_type);
         TextView rent = view.findViewById(R.id.car_rent);
-        ImageView fuel = view.findViewById(R.id.car_fuel);
+        TextView fuel = view.findViewById(R.id.car_fuel);
 
-        if (carHelper.getImage() != 0)
-            carImage.setImageResource(carHelper.getImage());
+        StorageReference reference = Car.getStorageReference().child(carHelper.getId()).child(Car.getFileName());
+
+        GlideApp.with(context)
+                .load(reference)
+                .placeholder(R.drawable.preview)
+                .error(R.drawable.preview)
+                .centerCrop()
+                .into(carImage);
         carBrandModel.setText(carHelper.getBrand_model());
         carYearType.setText(carHelper.getYear_type());
+        switch (carHelper.getFuel()) {
+            case "Petrol":
+                fuel.setText("P");
+                break;
+            case "Diesel":
+                fuel.setText("D");
+                break;
+            case "Electric":
+                fuel.setText("E");
+                break;
+            case "Hybrid":
+                fuel.setText("H");
+                break;
+        }
         rent.setText(String.format("Rs.%.2f/day", carHelper.getRentPerDay()));
 
         return view;

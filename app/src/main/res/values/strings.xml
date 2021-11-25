@@ -20,6 +20,8 @@
     <string name="car_reg_number">License Plate Number</string>
     <string name="car_transmission">Transmission</string>
     <string name="car_rent">Rent Per Day</string>
+    <string name="action_camera_only">Camera Only</string>
+    <string name="action_gallery_only">Gallery Only</string>
 
     <string-array name="car_fuel">
         <item>Petrol</item>

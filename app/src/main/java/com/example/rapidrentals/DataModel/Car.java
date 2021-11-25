@@ -1,5 +1,7 @@
 package com.example.rapidrentals.DataModel;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -9,6 +11,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,9 @@ public class Car {
 
     // Database
     private static final String CARS_DB = "Cars";
+    private static final String fileName = "car.jpg";
     private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(CARS_DB);
+    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(CARS_DB);
 
     // Cars Fields
     private String id;
@@ -89,6 +96,14 @@ public class Car {
         databaseReference.child(id).removeValue().addOnCompleteListener(getBooleanListener(carDao));
     }
 
+    public void uploadCarImage(Uri carImageUri, CarDao carDao) {
+        storageReference.child(id).child(fileName).putFile(carImageUri).addOnCompleteListener(task -> carDao.getBoolean(task.isSuccessful()));
+    }
+
+//    public StorageReference getCarImageReference() {
+//        return storageReference.child(id).child(fileName);
+//    }
+
     @Override
     public String toString() {
         return "Car{" +
@@ -110,7 +125,7 @@ public class Car {
     }
 
     // Listeners
-    private static OnCompleteListener<Void>  getBooleanListener(CarDao carDao) {
+    private static OnCompleteListener<Void> getBooleanListener(CarDao carDao) {
         return new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -124,7 +139,7 @@ public class Car {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Car> carList = new ArrayList<>();
-                for (DataSnapshot snapshot1:snapshot.getChildren())
+                for (DataSnapshot snapshot1 : snapshot.getChildren())
                     carList.add(snapshot1.getValue(Car.class));
                 carDao.getCarList(carList);
             }
@@ -261,5 +276,13 @@ public class Car {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public static StorageReference getStorageReference() {
+        return storageReference;
+    }
+
+    public static String getFileName() {
+        return fileName;
     }
 }

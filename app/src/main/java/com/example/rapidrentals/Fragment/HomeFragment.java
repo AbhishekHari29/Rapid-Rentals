@@ -63,10 +63,10 @@ public class HomeFragment extends Fragment {
         availableCarRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         availableCarHelpers = new ArrayList<>();
-        availableCarHelpers.add(new CarHelper(R.drawable.audi, "BMW, X5","2013, Sedan", "Anna Nagar, Chennai", "P", 200f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi, "BMW, S5","2014, Sedan", "Anna Nagar, Chennai", "D", 300f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi, "BMW, X4","2015, Sedan", "Anna Nagar, Chennai", "E", 400f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi, "BMW, S4","2016, Sedan", "Anna Nagar, Chennai", "P", 500f));
+        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, X5","2013, Sedan", "Anna Nagar, Chennai", "P", 200f));
+        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, S5","2014, Sedan", "Anna Nagar, Chennai", "D", 300f));
+        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, X4","2015, Sedan", "Anna Nagar, Chennai", "E", 400f));
+        availableCarHelpers.add(new CarHelper(R.drawable.audi, "","BMW, S4","2016, Sedan", "Anna Nagar, Chennai", "P", 500f));
 
         availableCarAdapter = new CarAdapter(availableCarHelpers);
         availableCarRecycler.setAdapter(availableCarAdapter);

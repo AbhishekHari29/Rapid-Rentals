@@ -90,7 +90,7 @@ public class AddFragment extends Fragment {
 
                     carHelpers.clear();
                     for (Car car : carList) {
-                        carHelpers.add(new CarHelper(0, car.getBrand() + ", " + car.getModel(), car.getYear() + " • " + car.getType(), null, car.getFuel(), car.getRentPerDay()));
+                        carHelpers.add(new CarHelper(0,car.getId(), car.getBrand() + ", " + car.getModel(), car.getYear() + " • " + car.getType(), null, car.getFuel(), car.getRentPerDay()));
                     }
 
                 } else {

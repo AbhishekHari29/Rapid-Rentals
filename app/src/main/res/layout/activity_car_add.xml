@@ -24,6 +24,7 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <include layout="@layout/content_gallery_only" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/car_brand_layout"
