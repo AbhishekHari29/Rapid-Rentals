@@ -1,32 +1,33 @@
 package com.example.rapidrentals.Helper;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
+import com.example.rapidrentals.Activity.CarDetailActivity;
 import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.R;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class CarRentAdapter extends ArrayAdapter<CarHelper> {
+public class CarBuyAdapter extends ArrayAdapter<CarHelper> {
 
     Context context;
     List<CarHelper> carHelpers;
     int customLayoutId;
 
-    public CarRentAdapter(@NonNull Context context, int resource, @NonNull List<CarHelper> objects) {
+    public CarBuyAdapter(@NonNull Context context, int resource, @NonNull List<CarHelper> objects) {
         super(context, resource, objects);
         this.context = context;
         this.carHelpers = objects;
@@ -55,19 +56,31 @@ public class CarRentAdapter extends ArrayAdapter<CarHelper> {
         TextView carYearType = view.findViewById(R.id.car_year_type);
         TextView rent = view.findViewById(R.id.car_rent);
         TextView fuel = view.findViewById(R.id.car_fuel);
+        TextView bookBtn = view.findViewById(R.id.car_book_btn);
+
+        carBrandModel.setText(carHelper.getBrand_model());
+        carYearType.setText(carHelper.getYear_type());
+        fuel.setText(String.valueOf(carHelper.getFuel().charAt(0)));
+        rent.setText(String.format("Rs.%d", carHelper.getRentPerDay()));
+        bookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CarDetailActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle extras = new Bundle();
+                extras.putString(CarDetailActivity.CAR_ID, carHelper.getId());
+                intent.putExtras(extras);
+                context.startActivity(intent);
+            }
+        });
 
         StorageReference reference = Car.getStorageReference().child(carHelper.getId()).child(Car.getFileName());
-
         GlideApp.with(context)
                 .load(reference)
                 .placeholder(R.drawable.preview)
                 .error(R.drawable.preview)
                 .centerCrop()
                 .into(carImage);
-        carBrandModel.setText(carHelper.getBrand_model());
-        carYearType.setText(carHelper.getYear_type());
-        fuel.setText(String.valueOf(carHelper.getFuel().charAt(0)));
-        rent.setText(String.format("Rs.%d", carHelper.getRentPerDay()));
 
         return view;
     }

@@ -14,16 +14,27 @@ import android.widget.Toast;
 
 import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.DataModel.CarDao;
+import com.example.rapidrentals.Helper.GlideApp;
 import com.example.rapidrentals.R;
 import com.example.rapidrentals.Utility.LoadingDialog;
+import com.example.rapidrentals.Utility.ProcessManager;
 import com.example.rapidrentals.Utility.Validation;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
 
 public class CarAddActivity extends AppCompatActivity {
+
+    public static final String CAR_OPERATION = "CAR_OPERATION";
+    public static final String CAR_ADD = "CAR_ADD";
+    public static final String CAR_UPDATE = "CAR_UPDATE";
+    public static final String CAR_ID = "CAR_ID";
+
+    private String carOperation;
+    private String carId;
 
     private final int PICK_GALLERY = 101;
 
@@ -34,7 +45,7 @@ public class CarAddActivity extends AppCompatActivity {
     private AppCompatImageView carImageView;
     private Uri carImageUri;
 
-    private LoadingDialog loadingDialog;
+    private ProcessManager processManager;
 
     private FirebaseUser currentUser;
 
@@ -49,12 +60,23 @@ public class CarAddActivity extends AppCompatActivity {
 
     private void initComponents() {
 
-        loadingDialog = new LoadingDialog(CarAddActivity.this);
+        processManager = new ProcessManager(this);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            carOperation = extras.getString(CAR_OPERATION);
+            if (carOperation.equals(CAR_UPDATE)) {
+                carId = extras.getString(CAR_ID);
+                retrieveCarInformation();
+            }
+        } else {
+            carOperation = "";
         }
 
         carImageView = findViewById(R.id.imgGallery);
@@ -82,6 +104,37 @@ public class CarAddActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.car_transmission)));
     }
 
+    private void retrieveCarInformation() {
+        processManager.incrementProcessCount();
+        Car.getCarById(carId, new CarDao() {
+            @Override
+            public void getCar(Car car) {
+                if (car != null) {
+                    brand.getEditText().setText(car.getBrand());
+                    model.getEditText().setText(car.getModel());
+                    typeAtv.setText(car.getType());
+                    fuelAtv.setText(car.getFuel());
+                    transmissionAtv.setText(car.getTransmission());
+                    year.getEditText().setText(String.valueOf(car.getYear()));
+                    seat.getEditText().setText(String.valueOf(car.getNumOfSeats()));
+                    reg.getEditText().setText(car.getRegNumber());
+                    rent.getEditText().setText(String.valueOf(car.getRentPerDay()));
+                    carAvailableSwitch.setChecked(car.isCarAvailable());
+                    driverAvailableSwitch.setChecked(car.isDriverAvailable());
+
+                    StorageReference reference = Car.getStorageReference().child(car.getId()).child(Car.getFileName());
+
+                    GlideApp.with(getApplicationContext())
+                            .load(reference)
+                            .centerCrop()
+                            .into(carImageView);
+
+                }
+                processManager.decrementProcessCount();
+            }
+        });
+    }
+
     public void pickGalleryImage(View view) {
         ImagePicker.with(this)
                 .galleryOnly()
@@ -102,18 +155,18 @@ public class CarAddActivity extends AppCompatActivity {
     }
 
     public void onClickAddCar(View view) {
-        loadingDialog.startLoadingDialog();
+        processManager.incrementProcessCount();
 
         // Validation
         if (!validateCarDetails()) {
             Toast.makeText(getApplicationContext(), "Validation Failed", Toast.LENGTH_LONG).show();
-            loadingDialog.stopLoadingDialog();
+            processManager.decrementProcessCount();
             return;
         }
 
         //Initialize Object
         Car car = new Car();
-        car.setId(Car.generateCarId());
+        car.setId(carOperation.equals(CAR_UPDATE) ? carId : Car.generateCarId());
         car.setOwner(currentUser.getUid());
         car.setBrand(brand.getEditText().getText().toString().trim());
         car.setModel(model.getEditText().getText().toString().trim());
@@ -123,7 +176,7 @@ public class CarAddActivity extends AppCompatActivity {
         car.setRegNumber(reg.getEditText().getText().toString().trim());
         car.setNumOfSeats(Integer.parseInt(seat.getEditText().getText().toString().trim()));
         car.setYear(Integer.parseInt(year.getEditText().getText().toString().trim()));
-        car.setRentPerDay(Float.parseFloat(rent.getEditText().getText().toString().trim()));
+        car.setRentPerDay(Integer.parseInt(rent.getEditText().getText().toString().trim()));
         car.setCarAvailable(carAvailableSwitch.isChecked());
         car.setDriverAvailable(driverAvailableSwitch.isChecked());
 
@@ -133,23 +186,27 @@ public class CarAddActivity extends AppCompatActivity {
             public void getBoolean(Boolean result) {
                 if (result) {
                     Toast.makeText(getApplicationContext(), "Car Updated", Toast.LENGTH_SHORT).show();
-                    if (carImageUri != null)
+                    if (carImageUri != null) {
+                        processManager.incrementProcessCount();
                         car.uploadCarImage(carImageUri, new CarDao() {
                             @Override
                             public void getBoolean(Boolean result) {
                                 if (result) {
                                     Toast.makeText(getApplicationContext(), "Image Updated", Toast.LENGTH_SHORT).show();
-                                    loadingDialog.startLoadingDialog();
                                     finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
                                 }
+                                processManager.decrementProcessCount();
                             }
                         });
+                    } else {
+                        finish();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_SHORT).show();
                 }
-                loadingDialog.stopLoadingDialog();
+                processManager.decrementProcessCount();
             }
         });
     }

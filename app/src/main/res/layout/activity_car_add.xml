@@ -180,7 +180,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/form_element_bottom_margin"
             android:checked="true"
-            android:text="Car Available" />
+            android:text="Car Available"
+            app:thumbTint="@color/colorPrimaryDark"
+            app:trackTint="@color/colorPrimary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/driver_available_switch"
@@ -188,7 +190,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/form_element_bottom_margin"
             android:checked="true"
-            android:text="Driver Available" />
+            android:text="Driver Available"
+            app:thumbTint="@color/colorPrimaryDark"
+            app:trackTint="@color/colorPrimary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/car_location_switch"
@@ -196,7 +200,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/form_element_bottom_margin"
             android:checked="true"
-            android:text="Use Current Location" />
+            android:text="Use Current Location"
+            app:thumbTint="@color/colorPrimaryDark"
+            app:trackTint="@color/colorPrimary" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -228,8 +234,8 @@
                 android:layout_weight="1"
                 android:background="#000"
                 android:fontFamily="@font/muli_black"
-                android:text="Add"
                 android:onClick="onClickAddCar"
+                android:text="Add"
                 android:textColor="#fff"
                 android:transitionName="button_trans" />
 

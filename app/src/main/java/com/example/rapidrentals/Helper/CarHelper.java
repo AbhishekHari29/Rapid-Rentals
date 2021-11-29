@@ -7,9 +7,9 @@ public class CarHelper {
     private String year_type;
     private String location;
     private String fuel;
-    private Float rentPerDay;
+    private int rentPerDay;
 
-    public CarHelper(int image, String id, String brand_model, String year_type, String location, String fuel, Float rentPerDay) {
+    public CarHelper(int image, String id, String brand_model, String year_type, String location, String fuel, int rentPerDay) {
         this.image = image;
         this.id = id;
         this.brand_model = brand_model;
@@ -43,7 +43,7 @@ public class CarHelper {
         return fuel;
     }
 
-    public Float getRentPerDay() {
+    public int getRentPerDay() {
         return rentPerDay;
     }
 }

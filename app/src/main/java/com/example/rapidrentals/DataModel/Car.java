@@ -39,7 +39,7 @@ public class Car {
     private String regNumber;
 
     //Rental Fields
-    private float rentPerDay;
+    private int rentPerDay;
     private boolean carAvailable;
     private boolean driverAvailable;
     private Location location;
@@ -48,7 +48,7 @@ public class Car {
     public Car() {
     }
 
-    public Car(String id, String owner, String brand, String model, String type, String fuel, String transmission, int numOfSeats, int year, String regNumber, float rentPerDay, boolean carAvailable, boolean driverAvailable, Location location) {
+    public Car(String id, String owner, String brand, String model, String type, String fuel, String transmission, int numOfSeats, int year, String regNumber, int rentPerDay, boolean carAvailable, boolean driverAvailable, Location location) {
         this.id = id;
         this.owner = owner;
         this.brand = brand;
@@ -76,6 +76,10 @@ public class Car {
 
     public static void getCarsByType(String type, CarDao carDao) {
         databaseReference.orderByChild("type").equalTo(type).addListenerForSingleValueEvent(getCarListListener(carDao));
+    }
+
+    public static void getAvailableCars(CarDao carDao) {
+        databaseReference.orderByChild("carAvailable").equalTo(true).addListenerForSingleValueEvent(getCarListListener(carDao));
     }
 
     public static void getCarById(String carId, CarDao carDao) {
@@ -246,11 +250,11 @@ public class Car {
         this.transmission = transmission;
     }
 
-    public float getRentPerDay() {
+    public int getRentPerDay() {
         return rentPerDay;
     }
 
-    public void setRentPerDay(float rentPerDay) {
+    public void setRentPerDay(int rentPerDay) {
         this.rentPerDay = rentPerDay;
     }
 

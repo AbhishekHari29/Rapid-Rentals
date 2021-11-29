@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.rapidrentals.Activity.CarDetailActivity;
 import com.example.rapidrentals.Activity.LoginActivity;
+import com.example.rapidrentals.DataModel.Car;
+import com.example.rapidrentals.DataModel.CarDao;
 import com.example.rapidrentals.Helper.CarAdapter;
 import com.example.rapidrentals.Helper.CarHelper;
 import com.example.rapidrentals.Helper.CategoryAdapter;
@@ -25,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -37,7 +41,6 @@ public class HomeFragment extends Fragment {
     private RecyclerView categoryRecycler;
     private RecyclerView.Adapter categoryAdapter;
     private ArrayList<CategoryHelper> categoryHelpers;
-
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -63,13 +66,10 @@ public class HomeFragment extends Fragment {
         availableCarRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         availableCarHelpers = new ArrayList<>();
-        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, X5","2013, Sedan", "Anna Nagar, Chennai", "P", 200f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, S5","2014, Sedan", "Anna Nagar, Chennai", "D", 300f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi,"" ,"BMW, X4","2015, Sedan", "Anna Nagar, Chennai", "E", 400f));
-        availableCarHelpers.add(new CarHelper(R.drawable.audi, "","BMW, S4","2016, Sedan", "Anna Nagar, Chennai", "P", 500f));
-
-        availableCarAdapter = new CarAdapter(availableCarHelpers);
+        availableCarAdapter = new CarAdapter(getActivity().getApplicationContext(),availableCarHelpers);
         availableCarRecycler.setAdapter(availableCarAdapter);
+
+        retrieveAvailableCars();
 
         // Category Recycler
         categoryRecycler = root.findViewById(R.id.categories_recycler);
@@ -77,13 +77,30 @@ public class HomeFragment extends Fragment {
         categoryRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         categoryHelpers = new ArrayList<>();
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1,"1","Sports",gradientDrawables[0]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1,"2","Sedan",gradientDrawables[1]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1,"3","Luxury",gradientDrawables[2]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1,"4","Coupe",gradientDrawables[3]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "1", "Sports", gradientDrawables[0]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "2", "Sedan", gradientDrawables[1]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "3", "Luxury", gradientDrawables[2]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "4", "Coupe", gradientDrawables[3]));
 
         categoryAdapter = new CategoryAdapter(categoryHelpers);
         categoryRecycler.setAdapter(categoryAdapter);
+    }
+
+    private void retrieveAvailableCars() {
+        Car.getAvailableCars(new CarDao() {
+            @Override
+            public void getCarList(List<Car> carList) {
+                if (carList != null && carList.size() > 0) {
+                    availableCarHelpers.clear();
+                    for (Car car : carList) {
+                        availableCarHelpers.add(new CarHelper(0, car.getId(), car.getBrand() + ", " + car.getModel(), car.getYear() + " • " + car.getType(), null, car.getFuel(), car.getRentPerDay()));
+                    }
+                    availableCarAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "No Available Cars", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }
