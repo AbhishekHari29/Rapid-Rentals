@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,12 +20,14 @@ import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.R;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CarBuyAdapter extends ArrayAdapter<CarHelper> {
 
     Context context;
     List<CarHelper> carHelpers;
+    List<CarHelper> carHelpersAll;
     int customLayoutId;
 
     public CarBuyAdapter(@NonNull Context context, int resource, @NonNull List<CarHelper> objects) {
@@ -83,5 +86,43 @@ public class CarBuyAdapter extends ArrayAdapter<CarHelper> {
                 .into(carImage);
 
         return view;
+    }
+
+    // Filter
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    private Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<CarHelper> filteredCars = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredCars.addAll(carHelpersAll);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (CarHelper carHelper : carHelpersAll)
+                    if (carHelper.getBrand_model().toLowerCase().contains(filterPattern) ||
+                            carHelper.getYear_type().toLowerCase().contains(filterPattern))
+                        filteredCars.add(carHelper);
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredCars;
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            carHelpers.clear();
+            carHelpers.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    public void setOriginalList(List<CarHelper> carHelpersAll) {
+        this.carHelpersAll = new ArrayList<>(carHelpersAll);
     }
 }

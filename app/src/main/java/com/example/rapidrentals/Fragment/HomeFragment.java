@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,8 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rapidrentals.Activity.CarDetailActivity;
-import com.example.rapidrentals.Activity.LoginActivity;
+import com.example.rapidrentals.Activity.SearchActivity;
 import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.DataModel.CarDao;
 import com.example.rapidrentals.Helper.CarAdapter;
@@ -23,14 +22,13 @@ import com.example.rapidrentals.Helper.CarHelper;
 import com.example.rapidrentals.Helper.CategoryAdapter;
 import com.example.rapidrentals.Helper.CategoryHelper;
 import com.example.rapidrentals.R;
-import com.example.rapidrentals.Utility.AppUtility;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+
+    private SearchView searchView;
 
     //AvailableCar Recycler
     private RecyclerView availableCarRecycler;
@@ -60,6 +58,25 @@ public class HomeFragment extends Fragment {
         gradientDrawables[2] = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0xfff7c59f, 0xFFf7c59f});
         gradientDrawables[3] = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{0xffb8d7f5, 0xffb8d7f5});
 
+        searchView = root.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), SearchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle extras = new Bundle();
+                extras.putString(SearchActivity.SEARCH_QUERY, query);
+                intent.putExtras(extras);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         // Available Cars Recycler
         availableCarRecycler = root.findViewById(R.id.available_cars_recycler);
         availableCarRecycler.setHasFixedSize(true);
@@ -82,7 +99,7 @@ public class HomeFragment extends Fragment {
         categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "3", "Luxury", gradientDrawables[2]));
         categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "4", "Coupe", gradientDrawables[3]));
 
-        categoryAdapter = new CategoryAdapter(categoryHelpers);
+        categoryAdapter = new CategoryAdapter(getActivity().getApplicationContext(),categoryHelpers);
         categoryRecycler.setAdapter(categoryAdapter);
     }
 

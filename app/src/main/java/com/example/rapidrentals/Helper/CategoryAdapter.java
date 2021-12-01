@@ -1,5 +1,8 @@
 package com.example.rapidrentals.Helper;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +14,18 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.rapidrentals.Activity.SearchActivity;
 import com.example.rapidrentals.R;
 
 import java.util.ArrayList;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
+    Context context;
     ArrayList<CategoryHelper> categories;
 
-    public CategoryAdapter(ArrayList<CategoryHelper> categories) {
+    public CategoryAdapter(Context context,ArrayList<CategoryHelper> categories) {
+        this.context = context;
         this.categories = categories;
     }
 
@@ -37,7 +43,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.image.setImageResource(categoryHelper.getImage());
         holder.title.setText(categoryHelper.getTitle());
         holder.layout.setBackground(categoryHelper.getBackground());
-        holder.layout.setContentDescription(categoryHelper.getId());
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, SearchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle extras = new Bundle();
+                extras.putString(SearchActivity.SEARCH_QUERY, categoryHelper.getTitle());
+                intent.putExtras(extras);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
