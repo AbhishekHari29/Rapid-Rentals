@@ -3,6 +3,7 @@ package com.example.rapidrentals.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rapidrentals.DataModel.Booking;
 import com.example.rapidrentals.DataModel.Car;
 import com.example.rapidrentals.DataModel.CarDao;
 import com.example.rapidrentals.DataModel.User;
@@ -55,12 +57,6 @@ public class CarDetailActivity extends AppCompatActivity {
         owner = findViewById(R.id.car_owner);
         contact = findViewById(R.id.car_contact);
         backBtn = findViewById(R.id.backButton);
-        cancelBtn = findViewById(R.id.cancelButton);
-        boonBtn = findViewById(R.id.bookButton);
-
-        View.OnClickListener backClickListener = view -> onBackPressed();
-        backBtn.setOnClickListener(backClickListener);
-        cancelBtn.setOnClickListener(backClickListener);
 
         processManager = new ProcessManager(this);
 
@@ -116,7 +112,16 @@ public class CarDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void onClickBack(View view) {
+    public void onClickBook(View view) {
+        Intent intent = new Intent(getApplicationContext(), CarBookActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(CarBookActivity.CAR_ID,carId);
+        extras.putString(CarBookActivity.BOOK_OPERATION, CarBookActivity.BOOK_ADD);
+        intent.putExtras(extras);
+        startActivity(intent);
+    }
+
+    public void onClickBack(View view) {
         onBackPressed();
     }
 }
