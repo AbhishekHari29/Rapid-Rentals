@@ -94,10 +94,10 @@ public class HomeFragment extends Fragment {
         categoryRecycler.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         categoryHelpers = new ArrayList<>();
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "1", "Sports", gradientDrawables[0]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "2", "Sedan", gradientDrawables[1]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "3", "Luxury", gradientDrawables[2]));
-        categoryHelpers.add(new CategoryHelper(R.drawable.car_category_1, "4", "Coupe", gradientDrawables[3]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_sports, "1", "Sports", gradientDrawables[0]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_sedan, "2", "Sedan", gradientDrawables[1]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_luxury, "3", "Luxury", gradientDrawables[2]));
+        categoryHelpers.add(new CategoryHelper(R.drawable.car_coupe1, "4", "Coupe", gradientDrawables[3]));
 
         categoryAdapter = new CategoryAdapter(getActivity().getApplicationContext(),categoryHelpers);
         categoryRecycler.setAdapter(categoryAdapter);

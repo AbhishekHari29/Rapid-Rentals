@@ -35,7 +35,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private LoadingDialog loadingDialog;
     private TextView headerText;
-    private TextInputLayout fullNameLayout, emailLayout, phoneLayout, userTypeLayout, passwordLayout, cpasswordLayout;
+    private TextInputLayout fullNameLayout, emailLayout, phoneLayout, passwordLayout, cpasswordLayout;
     private Button registerBtn, goToLoginBtn;
     private FirebaseAuth mAuth;
 
@@ -50,7 +50,7 @@ public class SignupActivity extends AppCompatActivity {
         fullNameLayout = findViewById(R.id.fullname_layout);
         emailLayout = findViewById(R.id.email_layout);
         phoneLayout = findViewById(R.id.phone_layout);
-        userTypeLayout = findViewById(R.id.usertype_layout);
+
         passwordLayout = findViewById(R.id.password_layout);
         cpasswordLayout = findViewById(R.id.cpassword_layout);
         registerBtn = findViewById(R.id.register_button);
@@ -82,7 +82,7 @@ public class SignupActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             Log.d("MMESAGE", "Here 1");
                             FirebaseUser currentUser = mAuth.getCurrentUser();
                             User user = new User(currentUser.getUid(), fullName, email, phone, password, "", createdAt);
@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
                                 @Override
                                 public void getBoolean(Boolean result) {
                                     Log.d("MMESAGE", "Here 2");
-                                    if (result){
+                                    if (result) {
                                         Log.d("MMESAGE", "Here 3");
 //                                        AppUtility.makeToast(getApplicationContext(), "Successfully Registered", Toast.LENGTH_SHORT);
                                         Toast.makeText(getApplicationContext(), "Successfully Registered", Toast.LENGTH_SHORT).show();
@@ -98,8 +98,7 @@ public class SignupActivity extends AppCompatActivity {
                                         loadingDialog.stopLoadingDialog();
                                         startActivity(intent);
                                         finish();
-                                    }
-                                    else {
+                                    } else {
                                         Log.d("MMESAGE", "Here 4");
                                         loadingDialog.stopLoadingDialog();
 //                                        AppUtility.makeToast(getApplicationContext(), "Something went wrong. Try again", Toast.LENGTH_SHORT);
@@ -107,8 +106,7 @@ public class SignupActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             Log.d("MMESAGE", "Here 5");
                             loadingDialog.stopLoadingDialog();
                             AppUtility.makeToast(getApplicationContext(), "User couldn't be added. Try again", Toast.LENGTH_SHORT);
