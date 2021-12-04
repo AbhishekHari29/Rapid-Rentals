@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Booking {
@@ -56,8 +57,42 @@ public class Booking {
     }
 
     // Main Functions
+    public void startRent(BookingDao bookingDao) {
+        if (status.equals(UPCOMING)) {
+            status = ON_PROGRESS;
+            from = new Date().getTime();
+            updateBooking(bookingDao);
+        } else {
+            bookingDao.getBoolean(false, "Only " + UPCOMING + " Bookings can be started");
+        }
+    }
+
+    public void stopRent(BookingDao bookingDao) {
+        if (status.equals(ON_PROGRESS)) {
+            status = COMPLETED;
+            until = new Date().getTime();
+            calculateTotalFare();
+            updateBooking(bookingDao);
+        } else {
+            bookingDao.getBoolean(false, "Only " + ON_PROGRESS + " Bookings can be stopped");
+        }
+    }
+
+    public void cancel(BookingDao bookingDao) {
+        if (status.equals(UPCOMING)) {
+            status = CANCELLED;
+            updateBooking(bookingDao);
+        } else {
+            bookingDao.getBoolean(false, "Only " + UPCOMING + " Bookings can be cancelled");
+        }
+    }
+
     public void calculateTotalFare() {
-        totalFare = Math.round((until - from) * 1000 * 60 * 60 * 24 * totalFare * 100) / 100f;
+//        totalFare = until - from;
+        long milliseconds = until - from;
+        float days = milliseconds/(1000f*60*60*24);
+        totalFare = Math.round(days * rentPerDay * 100) / 100f;
+//        totalFare = days * rentPerDay;
     }
 
     public static void isAvailable(String carId, Long from, Long until, BookingDao bookingDao) {
@@ -78,7 +113,7 @@ public class Booking {
                     boolean available = true;
                     if (bookingList != null && bookingList.size() > 0) {
                         for (Booking booking : bookingList) {
-                            if (!booking.isAvailable(from, until)) {
+                            if ((booking.getStatus().equals(UPCOMING) || booking.getStatus().equals(ON_PROGRESS)) && !booking.isAvailable(from, until)) {
                                 available = false;
                                 break;
                             }
@@ -126,12 +161,16 @@ public class Booking {
             @Override
             public void getBoolean(Boolean result, String error) {
                 if (result) {
-                    databaseReference.child(id).setValue(booking).addOnCompleteListener(getBooleanListener(bookingDao));
+                    updateBooking(bookingDao);
                 } else {
                     bookingDao.getBoolean(false, error);
                 }
             }
         });
+    }
+
+    public void updateBooking(BookingDao bookingDao) {
+        databaseReference.child(id).setValue(this).addOnCompleteListener(getBooleanListener(bookingDao));
     }
 
     public void deleteBooking(BookingDao bookingDao) {

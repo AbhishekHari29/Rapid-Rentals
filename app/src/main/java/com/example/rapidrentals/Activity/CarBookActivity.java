@@ -149,8 +149,8 @@ public class CarBookActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE,i1);
                 calendar.set(Calendar.SECOND,0);
                 button.setText(calendar.getTime().toString());
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm: a");
-                String formatted = format.format(calendar.getTimeInMillis());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy hh:mm a");
+                String formatted = dateFormat.format(calendar.getTimeInMillis());
                 button.setText(formatted);
             }
         }, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), false).show();
@@ -190,8 +190,9 @@ public class CarBookActivity extends AppCompatActivity {
             public void getBooking(Booking booking) {
                 if (booking != null) {
                     currentBooking = booking;
-                    fromBtn.setText(String.valueOf(booking.getFrom()));
-                    untilBtn.setText(String.valueOf(booking.getUntil()));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy hh:mm a");
+                    fromBtn.setText(dateFormat.format(new Date(booking.getFrom())));
+                    untilBtn.setText(dateFormat.format(new Date(booking.getUntil())));
                     driverSwitch.setChecked(booking.isDriver());
                 } else {
                     Toast.makeText(getApplicationContext(), "Data not found", Toast.LENGTH_SHORT).show();

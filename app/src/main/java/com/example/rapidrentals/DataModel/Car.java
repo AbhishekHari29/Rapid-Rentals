@@ -170,6 +170,14 @@ public class Car {
     }
 
     // Getter and Setter
+    public String getBrandModel() {
+        return String.format("%s, %s", brand, model);
+    }
+
+    public String getYearType() {
+        return String.format("%s • %s", year, type);
+    }
+
     public String getId() {
         return id;
     }
